@@ -61,12 +61,14 @@ def process_excel_files(target_folder, process_range, criteria_range):
                         print(f"  Processing sheet: {sheet_name}")
                         ws = wb[sheet_name]
                         
-                        last_row = crit_start_row - 1
-                        for row in range(crit_start_row, crit_end_row + 1):
-                            if ws[f'{crit_start_col}{row}'].value is not None and ws[f'{crit_start_col}{row}'].value != "":
+                        last_row = proc_end_row
+                        for row in range(proc_end_row, proc_start_row - 1, -1):
+                            if all(ws.cell(row=row, column=col).value not in (None, "") 
+                                   for col in range(column_index_from_string(proc_start_col), column_index_from_string(proc_end_col) + 1)):
                                 last_row = row
+                                break
                         
-                        if last_row >= crit_start_row:
+                        if last_row >= proc_start_row:
                             print(f"    Copying range {proc_start_col}{proc_start_row}:{proc_end_col}{last_row}")
                             
                             # Copy non-blank rows to merge sheet
@@ -106,9 +108,3 @@ def process_excel_files(target_folder, process_range, criteria_range):
 
     print(f"Process completed. Files processed: {files_processed}, Sheets processed: {sheets_processed}")
     print(f"Total non-blank rows merged: {rows_merged}")
-
-if __name__ == "__main__":
-    target_folder, process_range, criteria_range = get_user_input()
-    if target_folder and process_range and criteria_range:
-        process_excel_files(target_folder, process_range, criteria_range)
-    input("Press Enter to exit...")
