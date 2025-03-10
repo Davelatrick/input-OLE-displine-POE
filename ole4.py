@@ -30,7 +30,6 @@ def parse_range(range_str):
     start_col, start_row = start[:2], int(start[2:])
     end_col, end_row = end[:2], int(end[2:])
     return start_col, start_row, end_col, end_row
-
 def process_excel_files(target_folder, process_range, criteria_range):
     print("Starting the process...")
     print(f"Selected folder: {target_folder}")
