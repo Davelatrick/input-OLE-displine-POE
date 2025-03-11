@@ -18,12 +18,7 @@ def get_user_input():
         print("Invalid process range. Exiting.")
         return None, None, None
 
-    criteria_range = simpledialog.askstring("Input", "Enter criteria range for finding last row (e.g., CV21:CV200):")
-    if not criteria_range or ':' not in criteria_range:
-        print("Invalid criteria range. Exiting.")
-        return None, None, None
-
-    return target_folder, process_range, criteria_range
+    return target_folder, process_range
 
 def parse_range(range_str):
     start, end = range_str.split(':')
@@ -31,14 +26,12 @@ def parse_range(range_str):
     end_col, end_row = end[:2], int(end[2:])
     return start_col, start_row, end_col, end_row
 
-def process_excel_files(target_folder, process_range, criteria_range):
+def process_excel_files(target_folder, process_range):
     print("Starting the process...")
     print(f"Selected folder: {target_folder}")
     print(f"Process range: {process_range}")
-    print(f"Criteria range: {criteria_range}")
 
     proc_start_col, proc_start_row, proc_end_col, proc_end_row = parse_range(process_range)
-    crit_start_col, crit_start_row, crit_end_col, crit_end_row = parse_range(criteria_range)
 
     merge_wb = Workbook()
     merge_ws = merge_wb.active
@@ -111,7 +104,7 @@ def process_excel_files(target_folder, process_range, criteria_range):
     print(f"Total non-blank rows merged: {rows_merged}")
 
 if __name__ == "__main__":
-    target_folder, process_range, criteria_range = get_user_input()
-    if target_folder and process_range and criteria_range:
-        process_excel_files(target_folder, process_range, criteria_range)
+    target_folder, process_range = get_user_input()
+    if target_folder and process_range:
+        process_excel_files(target_folder, process_range)
     input("Press Enter to exit...")
