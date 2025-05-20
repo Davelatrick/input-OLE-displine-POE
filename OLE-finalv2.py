@@ -104,6 +104,24 @@ def process_excel_files(target_folder, task_name, process_range, criteria_range)
             if i_value and s_value:
                 concat_value = f"{i_value}-{s_value}"
                 merge_ws.cell(row=row, column=9, value=concat_value)
+    # === ADD THE FOLLOWING CODE ===
+    from openpyxl.styles import PatternFill
+
+    # 1. Insert header row at the top with 't1' across all columns with data
+    merge_ws.insert_rows(1)
+    max_col = merge_ws.max_column
+    for col in range(1, max_col + 1):
+        cell = merge_ws.cell(row=1, column=col)
+        cell.value = "t1"
+
+    # 2. Detect and mark zero values
+    pink_fill = PatternFill(start_color='FFC0CB', end_color='FFC0CB', fill_type='solid')
+    for row in merge_ws.iter_rows(min_row=2, max_row=merge_ws.max_row, max_col=max_col):
+        for cell in row:
+            if cell.value == 0 or cell.value == 0.0:
+                cell.value = ""
+                cell.fill = pink_fill
+    # === END NEW CODE ===
 
     merge_path = os.path.join(target_folder, f"merge_{task_name}.xlsx")
     try:
